@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:tasky/core/constants/validator.dart';
+import 'package:tasky/core/utils/app_dialog.dart';
 import 'package:tasky/data/firebase/firebase_auth.dart';
 import 'package:tasky/features/auth/screens/register_screen.dart';
 import 'package:tasky/features/auth/widgets/bottom_part.dart';
 import 'package:tasky/features/auth/widgets/custom_button.dart';
 import 'package:tasky/features/auth/widgets/custom_text_form_field.dart';
+import 'package:tasky/features/tasks/screens/tasks_screen.dart';
 
 // ignore: must_be_immutable
 class LoginScreen extends StatelessWidget {
@@ -60,12 +62,29 @@ class LoginScreen extends StatelessWidget {
                   SizedBox(height: 71),
                   CustomAuthButton(
                     title: 'Login',
-                    onPressed: () {
+                    onPressed: () async {
+                      AppDialog.showLoadingDialog(context);
                       if (formKey.currentState!.validate()) {
-                        FirebaseAuth.login(
-                          email: email.text,
-                          password: password.text,
-                        );
+                        await FirebaseAuthUser.login(
+                              email: email.text,
+                              password: password.text,
+                            )
+                            .then((value) {
+                              email.clear();
+                              password.clear();
+                              Navigator.of(context).pop();
+                              Navigator.pushReplacementNamed(
+                                context,
+                                TasksScreen.pageRoute,
+                              );
+                            })
+                            .onError((error, stackTrace) {
+                              Navigator.of(context).pop();
+                              AppDialog.showErrorDialog(
+                                context,
+                                error.toString(),
+                              );
+                            });
                       }
                     },
                   ),

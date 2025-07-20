@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:tasky/core/constants/validator.dart';
+import 'package:tasky/core/utils/app_dialog.dart';
 import 'package:tasky/data/firebase/firebase_auth.dart';
+import 'package:tasky/features/auth/screens/login_screen.dart';
 import 'package:tasky/features/auth/widgets/bottom_part.dart';
 import 'package:tasky/features/auth/widgets/custom_button.dart';
 import 'package:tasky/features/auth/widgets/custom_text_form_field.dart';
@@ -68,12 +70,29 @@ class RegisterScreen extends StatelessWidget {
                   SizedBox(height: 41),
                   CustomAuthButton(
                     title: 'Register',
-                    onPressed: () {
+                    onPressed: () async {
                       if (formKey.currentState!.validate()) {
-                        FirebaseAuth.register(
-                          email: email.text,
-                          password: password.text,
-                        );
+                        AppDialog.showLoadingDialog(context);
+                        await FirebaseAuthUser.register(
+                              email: email.text,
+                              password: password.text,
+                            )
+                            .then((value) {
+                              email.clear();
+                              password.clear();
+                              confirmPassword.clear();
+                              Navigator.of(context).pop();
+                              Navigator.of(
+                                context,
+                              ).pushReplacementNamed(LoginScreen.pageRoute);
+                            })
+                            .onError((error, stackTrace) {
+                              Navigator.pop(context);
+                              AppDialog.showErrorDialog(
+                                context,
+                                error.toString(),
+                              );
+                            });
                       }
                     },
                   ),

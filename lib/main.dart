@@ -20,7 +20,7 @@ class Tasky extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData.light().copyWith(scaffoldBackgroundColor: Colors.white),
-      initialRoute: LoginScreen.pageRoute,
+      initialRoute: RegisterScreen.pageRoute,
       routes: {
         LoginScreen.pageRoute: (context) => LoginScreen(),
         RegisterScreen.pageRoute: (context) => RegisterScreen(),
