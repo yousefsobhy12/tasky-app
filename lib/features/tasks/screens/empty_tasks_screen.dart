@@ -8,6 +8,7 @@ class EmptyTasksScreen extends StatelessWidget {
   static const String pageRoute = 'EmptyTasksScreen';
   TextEditingController taskController = TextEditingController();
   TextEditingController descController = TextEditingController();
+  int priority = 0;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -44,6 +45,7 @@ class EmptyTasksScreen extends StatelessWidget {
               return CustomModalBottomSheet(
                 taskController: taskController,
                 descController: descController,
+                selectedIndex: priority,
               );
             },
           );

@@ -1,5 +1,6 @@
 import 'dart:developer';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:tasky/core/utils/app_shared_prefs.dart';
 
 abstract class FirebaseAuthUser {
   static Future<void> login({
@@ -7,10 +8,11 @@ abstract class FirebaseAuthUser {
     required String password,
   }) async {
     try {
-      final credential = await FirebaseAuth.instance.signInWithEmailAndPassword(
+      final user = await FirebaseAuth.instance.signInWithEmailAndPassword(
         email: email,
         password: password,
       );
+      await AppSharedPrefs.saveData('id', user.user?.uid);
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
         log('No user found for that email.');

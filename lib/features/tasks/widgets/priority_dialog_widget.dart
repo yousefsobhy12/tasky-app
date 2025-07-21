@@ -2,16 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:tasky/features/tasks/widgets/priority_container_widget.dart';
 import 'package:tasky/features/tasks/widgets/priority_dialog_button.dart';
 
+// ignore: must_be_immutable
 class PriorityDialogWidget extends StatefulWidget {
-  const PriorityDialogWidget({super.key});
-
+  PriorityDialogWidget({super.key, required this.selectedIndex,this.onSavePriority});
+  int selectedIndex;
+  void Function(int)? onSavePriority;
   @override
   State<PriorityDialogWidget> createState() => _PriorityDialogWidgetState();
 }
 
 class _PriorityDialogWidgetState extends State<PriorityDialogWidget> {
-  int selectedIndex = 1;
-
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
@@ -41,9 +41,9 @@ class _PriorityDialogWidgetState extends State<PriorityDialogWidget> {
             children: List.generate(10, (index) {
               return PriorityContainerWidget(
                 index: index,
-                isSelected: selectedIndex == index,
+                isSelected: widget.selectedIndex == index,
                 onTap: () {
-                  selectedIndex = index;
+                  widget.selectedIndex = index;
                   setState(() {});
                 },
               );
@@ -65,7 +65,10 @@ class _PriorityDialogWidgetState extends State<PriorityDialogWidget> {
                 backgroundColor: Color(0xff5F33E1),
                 textColor: Colors.white,
                 title: 'Save',
-                onPressed: () {},
+                onPressed: () {
+                  widget.onSavePriority?.call(widget.selectedIndex);
+                  Navigator.pop(context);
+                },
               ),
             ],
           ),

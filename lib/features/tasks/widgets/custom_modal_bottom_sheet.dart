@@ -3,15 +3,21 @@ import 'package:flutter_svg/svg.dart';
 import 'package:tasky/features/tasks/widgets/custom_text_and_textfield_widget.dart';
 import 'package:tasky/features/tasks/widgets/priority_dialog_widget.dart';
 
+// ignore: must_be_immutable
 class CustomModalBottomSheet extends StatelessWidget {
-  const CustomModalBottomSheet({
+  CustomModalBottomSheet({
     super.key,
     required this.taskController,
     required this.descController,
+    this.onSave,
+    this.onSavePriority,required this.selectedIndex,
   });
 
   final TextEditingController taskController;
   final TextEditingController descController;
+  void Function(int)? onSavePriority;
+  void Function()? onSave;
+  int selectedIndex = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -47,14 +53,17 @@ class CustomModalBottomSheet extends StatelessWidget {
                     showDialog(
                       context: context,
                       builder: (context) {
-                        return PriorityDialogWidget();
+                        return PriorityDialogWidget(selectedIndex: selectedIndex,onSavePriority: onSavePriority,);
                       },
                     );
                   },
                   child: SvgPicture.asset('assets/icons/flag_icon.svg'),
                 ),
                 Spacer(),
-                SvgPicture.asset('assets/icons/submit_icon.svg'),
+                GestureDetector(
+                  onTap: onSave,
+                  child: SvgPicture.asset('assets/icons/submit_icon.svg'),
+                ),
               ],
             ),
           ),
